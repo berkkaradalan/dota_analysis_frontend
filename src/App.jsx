@@ -14,6 +14,7 @@ function App() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const matchesPerPage = 5; // Her sayfada gösterilecek maç sayısı
+  const [hasMore, setHasMore] = useState(true);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -22,6 +23,8 @@ function App() {
     setUserInfo(null);
     setWinLose(null);
     setMatches([]);
+    setCurrentPage(1);
+    setHasMore(true);
 
     try {
       // Fetch user info
@@ -40,14 +43,16 @@ function App() {
       }
       setWinLose(winLoseResponse); // Store the whole response
 
-      // Fetch matches
-      const matchesResponse = await userService.getMatches(steamId);
+      // Fetch first page of matches
+      const matchesResponse = await userService.getMatches(steamId, matchesPerPage, 1);
       console.log('Raw matches data:', matchesResponse);
       console.log('Matches Response:', matchesResponse);
       if (matchesResponse.error) {
         throw new Error(matchesResponse.error);
       }
-      setMatches(Array.isArray(matchesResponse) ? matchesResponse : matchesResponse.message || []);
+      const matchList = matchesResponse.message || [];
+      setMatches(matchList);
+      setHasMore(matchList.length === matchesPerPage);
 
     } catch (err) {
       setError(err.message || 'An error occurred while fetching data');
@@ -68,20 +73,26 @@ function App() {
     });
   }, [userInfo, winLose, matches, loading, error]);
 
-  // Sayfalama için verileri parçalama
-  const indexOfLastMatch = currentPage * matchesPerPage;
-  const indexOfFirstMatch = indexOfLastMatch - matchesPerPage;
-  const currentMatches = matches.slice(indexOfFirstMatch, indexOfLastMatch);
+  // Add loadMoreMatches function
+  const loadMoreMatches = async () => {
+    try {
+      const nextPage = currentPage + 1;
+      const newMatches = await userService.getMatches(steamId, matchesPerPage, nextPage);
+      
+      if (newMatches.error) throw new Error(newMatches.error);
+      
+      const matchList = newMatches.message || [];
+      if (matchList.length === 0) {
+        setHasMore(false);
+        return;
+      }
 
-  const nextPage = () => {
-    if (indexOfLastMatch < matches.length) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setMatches(prevMatches => [...prevMatches, ...matchList]);
+      setCurrentPage(nextPage);
+      setHasMore(matchList.length === matchesPerPage);
+    } catch (err) {
+      setError(err.message || 'Error loading more matches');
+      console.error('Error:', err);
     }
   };
 
@@ -128,18 +139,17 @@ function App() {
           {matches && matches.length > 0 && (
             <div>
               <h2>Match History</h2>
-              <MatchList matches={currentMatches} />
+              <MatchList matches={matches} />
               
               <div className="pagination">
-                <button onClick={prevPage} disabled={currentPage === 1}>
-                  ⬅ Previous
-                </button>
-                <span>
-                  Page {currentPage} of {Math.ceil(matches.length / matchesPerPage)}
-                </span>
-                <button onClick={nextPage} disabled={indexOfLastMatch >= matches.length}>
-                  Next ➡
-                </button>
+                {hasMore && (
+                  <button 
+                    onClick={loadMoreMatches} 
+                    disabled={loading}
+                  >
+                    {loading ? 'Loading...' : 'Load More Matches'}
+                  </button>
+                )}
               </div>
             </div>
           )}
