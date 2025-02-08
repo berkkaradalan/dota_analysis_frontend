@@ -4,7 +4,9 @@ import '../styles/UserInfoCard.css';
 const UserInfoCard = ({ userInfo }) => {
   if (!userInfo) return null;
 
-  const { AccountID, PersonaName, SteamAvatar, LastLogin } = userInfo.message;
+  // Handle both direct and nested message structures
+  const data = userInfo.message || userInfo;
+  const { AccountID, PersonaName, SteamAvatar, LastLogin } = data;
 
   return (
     <div className="user-info-card">

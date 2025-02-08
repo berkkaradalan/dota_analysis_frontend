@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { userService } from './services/userService';
 import './App.css';
 import UserInfoCard from './components/UserInfoCard';
@@ -19,29 +19,54 @@ function App() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setUserInfo(null);
+    setWinLose(null);
+    setMatches([]);
 
     try {
-      const [userInfoData, winLoseData, matchesData] = await Promise.all([
-        userService.getUserInfo(steamId),
-        userService.getWinLose(steamId),
-        userService.getMatches(steamId),
-      ]);
+      // Fetch user info
+      const userResponse = await userService.getUserInfo(steamId);
+      console.log('User Response:', userResponse);
+      if (userResponse.error) {
+        throw new Error(userResponse.error);
+      }
+      setUserInfo({ message: userResponse }); // Wrap in message object if not already wrapped
 
-      console.log("User Info:", userInfoData);
-      console.log("Win/Lose:", winLoseData);
-      console.log("Matches Data:", matchesData);
+      // Fetch win/lose data
+      const winLoseResponse = await userService.getWinLose(steamId);
+      console.log('Win/Lose Response:', winLoseResponse);
+      if (winLoseResponse.error) {
+        throw new Error(winLoseResponse.error);
+      }
+      setWinLose(winLoseResponse); // Store the whole response
 
-      setUserInfo(userInfoData);
-      setWinLose(winLoseData);
-      setMatches(matchesData.message || []); // matchesData.message dizisini aldığımızdan emin ol
-      setCurrentPage(1); // Yeni aramada sayfayı sıfırla
+      // Fetch matches
+      const matchesResponse = await userService.getMatches(steamId);
+      console.log('Raw matches data:', matchesResponse);
+      console.log('Matches Response:', matchesResponse);
+      if (matchesResponse.error) {
+        throw new Error(matchesResponse.error);
+      }
+      setMatches(Array.isArray(matchesResponse) ? matchesResponse : matchesResponse.message || []);
+
     } catch (err) {
-      setError('Error fetching data. Please try again.');
-      console.error(err);
+      setError(err.message || 'An error occurred while fetching data');
+      console.error('Error:', err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Add this debug logging
+  useEffect(() => {
+    console.log('Current state:', {
+      userInfo,
+      winLose,
+      matches,
+      loading,
+      error
+    });
+  }, [userInfo, winLose, matches, loading, error]);
 
   // Sayfalama için verileri parçalama
   const indexOfLastMatch = currentPage * matchesPerPage;
@@ -83,24 +108,28 @@ function App() {
         </button>
       </form>
 
+      {loading && <div className="loading">Fetching user data...</div>}
+      
       {error && <div className="error">{error}</div>}
 
-      {userInfo && (
+      {!loading && !error && userInfo && (
         <div className="results">
           <UserInfoCard userInfo={userInfo} />
 
           {winLose && (
             <div>
-              <WinLoseBar win={winLose.message.Win} lose={winLose.message.Lose} />
+              <WinLoseBar 
+                win={winLose.Win || winLose.message?.Win} 
+                lose={winLose.Lose || winLose.message?.Lose} 
+              />
             </div>
           )}
 
-          {matches.length > 0 && (
+          {matches && matches.length > 0 && (
             <div>
               <h2>Match History</h2>
               <MatchList matches={currentMatches} />
               
-              {/* Sayfalama Kontrolleri */}
               <div className="pagination">
                 <button onClick={prevPage} disabled={currentPage === 1}>
                   ⬅ Previous
