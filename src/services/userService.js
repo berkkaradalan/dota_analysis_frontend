@@ -14,5 +14,10 @@ export const userService = {
   getMatches: async (steamId, limit = 10, page = 1) => {
     const response = await fetch(`${BASE_URL}/match/${steamId}?limit=${limit}&page=${page}`);
     return response.json();
+  },
+
+  async getHeroDetails(heroId) {
+    const response = await fetch(`${BASE_URL}/hero/${heroId}`);
+    return response.json();
   }
 }; 

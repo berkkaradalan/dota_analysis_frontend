@@ -1,9 +1,50 @@
 .match-card {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    background-color: #282c34;
-    color: white;
-  }
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 8px;
+  background-color: #282c34;
+  color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.match-card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.match-card-header h3 {
+  margin: 0;
+  color: white;
+  font-family: 'Reaver', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.match-card-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.match-card-details p {
+  margin: 5px 0;
+  color: #ccc;
+}
+
+.match-card-details strong {
+  color: white;
+}
   

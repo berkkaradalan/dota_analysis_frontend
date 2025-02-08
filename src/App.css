@@ -190,8 +190,15 @@ pre {
 .win-lose-text {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+  font-family: 'Reaver', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   margin-bottom: 5px;
+}
+
+.win-lose-text span {
+  font-weight: bold;
+  color: white;
 }
 
 .progress-bar {
@@ -259,5 +266,12 @@ pre {
   margin: 10px;
   border-radius: 5px;
   background-color: #282c34;
+  color: white;
+}
+
+h2 {
+  font-family: 'Reaver', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: white;
 }
