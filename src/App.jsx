@@ -30,7 +30,7 @@ function App() {
       if (userResponse.error) {
         throw new Error(userResponse.error);
       }
-      setUserInfo({ message: userResponse }); // Wrap in message object if not already wrapped
+      setUserInfo(userResponse.message || userResponse);
 
       // Fetch win/lose data
       const winLoseResponse = await userService.getWinLose(steamId);

@@ -2,11 +2,17 @@ import React from 'react';
 import '../styles/UserInfoCard.css';
 
 const UserInfoCard = ({ userInfo }) => {
+  console.log('UserInfo received:', userInfo); // Debug log
+
   if (!userInfo) return null;
 
-  // Handle both direct and nested message structures
-  const data = userInfo.message || userInfo;
-  const { AccountID, PersonaName, SteamAvatar, LastLogin } = data;
+  // No need to check for message property anymore since we handle it in App.jsx
+  const { AccountID, PersonaName, SteamAvatar, LastLogin } = userInfo;
+
+  if (!AccountID || !PersonaName || !SteamAvatar) {
+    console.error('Missing required user info properties:', userInfo);
+    return <div>Error loading user information</div>;
+  }
 
   return (
     <div className="user-info-card">
@@ -16,7 +22,9 @@ const UserInfoCard = ({ userInfo }) => {
       <div className="details">
         <h2>{PersonaName}</h2>
         <p className="account-id">Account ID: {AccountID}</p>
-        <p className="last-login">Last Login: {new Date(LastLogin).toLocaleDateString()}</p>
+        <p className="last-login">
+          Last Login: {LastLogin ? new Date(LastLogin).toLocaleDateString() : 'N/A'}
+        </p>
       </div>
     </div>
   );
