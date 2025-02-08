@@ -1,0 +1,9 @@
+.match-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: #282c34;
+    color: white;
+  }
+  
