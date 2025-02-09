@@ -4,6 +4,7 @@ import './App.css';
 import UserInfoCard from './components/UserInfoCard';
 import WinLoseBar from './components/WinLoseBar';
 import MatchList from './components/MatchList';
+import FavoriteHeroes from './components/FavoriteHeroes';
 
 function App() {
   const [steamId, setSteamId] = useState('');
@@ -135,6 +136,8 @@ function App() {
               />
             </div>
           )}
+
+          <FavoriteHeroes steamId={steamId} />
 
           {matches && matches.length > 0 && (
             <div>

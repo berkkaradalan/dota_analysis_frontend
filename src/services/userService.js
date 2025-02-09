@@ -19,5 +19,10 @@ export const userService = {
   async getHeroDetails(heroId) {
     const response = await fetch(`${BASE_URL}/hero/${heroId}`);
     return response.json();
+  },
+
+  async getFavoriteHeroes(steamId) {
+    const response = await fetch(`${BASE_URL}/hero/favorites/${steamId}`);
+    return response.json();
   }
 }; 
