@@ -39,29 +39,28 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
     };
 
     const fetchAbilityDetails = async () => {
-      if (!matchDetails?.AbilityUpgrades) return;
+      if (!matchDetails) return;
       
-      // Create an array of 30 slots initialized to null
-      const abilityMap = Array(30).fill(null);
-      
-      // Map each ability upgrade to its corresponding slot
-      for (let i = 0; i < matchDetails.AbilityUpgrades.length; i++) {
-        const abilityId = matchDetails.AbilityUpgrades[i];
+      // Assuming abilities are stored as Ability0 through Ability29 in matchDetails
+      const abilityPromises = Array.from({ length: 30 }, async (_, index) => {
+        const abilityId = matchDetails[`Ability${index}`];
+        if (!abilityId || abilityId === 0) return null;
+        
         try {
           const data = await userService.getAbilityDetails(abilityId);
-          abilityMap[i] = { id: abilityId, ...data };
+          return { id: abilityId, ...data };
         } catch (error) {
           console.error(`Error fetching ability ${abilityId}:`, error);
+          return null;
         }
-      }
-
-      // Convert array to object with Ability0, Ability1, etc. keys
-      const abilityDetails = {};
-      abilityMap.forEach((ability, index) => {
-        abilityDetails[`Ability${index}`] = ability;
       });
-      
-      setAbilityDetails(abilityDetails);
+
+      const abilities = await Promise.all(abilityPromises);
+      const abilityMap = {};
+      abilities.forEach((ability, index) => {
+        abilityMap[`Ability${index}`] = ability;
+      });
+      setAbilityDetails(abilityMap);
     };
 
     fetchItemDetails();
@@ -101,35 +100,91 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
         
         {!isLoading && !error && matchDetails && (
           <>
-            <div className="details-grid">
-              <div className="detail-section">
-                <h3>Performance</h3>
-                <p>K/D/A: {matchDetails.Kills}/{matchDetails.Death}/{matchDetails.Assists}</p>
-                <p>KDA Ratio: {matchDetails.KillDeathAssist.toFixed(2)}</p>
-                <p>Level: {matchDetails.Level}</p>
+            <div className="match-stats-container">
+              <div className="match-stat-card performance">
+                <div className="stat-header">
+                  <h3>Performance</h3>
+                  <div className="stat-icon">🎯</div>
+                </div>
+                <div className="stat-content">
+                  <div className="stat-row">
+                    <span className="stat-label">K/D/A</span>
+                    <span className="stat-value">{matchDetails.Kills}/{matchDetails.Death}/{matchDetails.Assists}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">KDA Ratio</span>
+                    <span className="stat-value">{matchDetails.KillDeathAssist.toFixed(2)}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">Level</span>
+                    <span className="stat-value">{matchDetails.Level}</span>
+                  </div>
+                </div>
               </div>
 
-          <div className="detail-section">
-            <h3>Economy</h3>
-            <p>Net Worth: {matchDetails.NetWorth}</p>
-            <p>GPM: {matchDetails.GoldPerMinute}</p>
-            <p>XPM: {matchDetails.XPPerMinute}</p>
-          </div>
+              <div className="match-stat-card economy">
+                <div className="stat-header">
+                  <h3>Economy</h3>
+                  <div className="stat-icon">💰</div>
+                </div>
+                <div className="stat-content">
+                  <div className="stat-row">
+                    <span className="stat-label">Net Worth</span>
+                    <span className="stat-value">{matchDetails.NetWorth.toLocaleString()}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">GPM</span>
+                    <span className="stat-value">{matchDetails.GoldPerMinute}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">XPM</span>
+                    <span className="stat-value">{matchDetails.XPPerMinute}</span>
+                  </div>
+                </div>
+              </div>
 
-          <div className="detail-section">
-            <h3>Impact</h3>
-            <p>Hero Damage: {matchDetails.HeroDamage}</p>
-            <p>Tower Damage: {matchDetails.TowerDamage}</p>
-            <p>Hero Healing: {matchDetails.HeroHealing}</p>
-          </div>
+              <div className="match-stat-card impact">
+                <div className="stat-header">
+                  <h3>Impact</h3>
+                  <div className="stat-icon">⚔️</div>
+                </div>
+                <div className="stat-content">
+                  <div className="stat-row">
+                    <span className="stat-label">Hero Damage</span>
+                    <span className="stat-value">{matchDetails.HeroDamage.toLocaleString()}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">Tower Damage</span>
+                    <span className="stat-value">{matchDetails.TowerDamage.toLocaleString()}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">Hero Healing</span>
+                    <span className="stat-value">{matchDetails.HeroHealing.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
 
-          <div className="detail-section">
-            <h3>Farming</h3>
-            <p>Last Hits: {matchDetails.LastHits}</p>
-            <p>Denies: {matchDetails.Denies}</p>
-            <p>Gold Spent: {matchDetails.GoldSpent}</p>
-          </div>
-        </div>
+              <div className="match-stat-card farming">
+                <div className="stat-header">
+                  <h3>Farming</h3>
+                  <div className="stat-icon">🌾</div>
+                </div>
+                <div className="stat-content">
+                  <div className="stat-row">
+                    <span className="stat-label">Last Hits</span>
+                    <span className="stat-value">{matchDetails.LastHits}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">Denies</span>
+                    <span className="stat-value">{matchDetails.Denies}</span>
+                  </div>
+                  <div className="stat-row">
+                    <span className="stat-label">Gold Spent</span>
+                    <span className="stat-value">{matchDetails.GoldSpent.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="items-section">
               <h3>Items</h3>
@@ -151,28 +206,25 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
             </div>
 
             <div className="abilities-section">
-              <h3>Abilities</h3>
-              {[0, 1, 2].map(row => (
-                <div key={row} className="ability-row">
-                  {Array.from({ length: 10 }, (_, i) => {
-                    const index = row * 10 + i;
-                    const ability = abilityDetails[`Ability${index}`];
-                    return (
-                      <div key={index} className="ability-slot">
-                        {ability ? (
-                          <img 
-                            src={ability.AbilityImage}
-                            alt={ability.AbilityName}
-                            title={ability.AbilityName}
-                          />
-                        ) : (
-                          <div className="empty-ability-slot" />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+              <h3>Ability Upgrades</h3>
+              <div className="ability-row">
+                {Array.from({ length: 30 }, (_, index) => {
+                  const ability = abilityDetails[`Ability${index}`];
+                  return (
+                    <div key={index} className="ability-slot">
+                      {ability ? (
+                        <img 
+                          src={ability.AbilityImage}
+                          alt={ability.AbilityName}
+                          title={`Level ${index + 1}: ${ability.AbilityName}`}
+                        />
+                      ) : (
+                        <div className="empty-ability-slot" title={`Level ${index + 1}`} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="match-info">

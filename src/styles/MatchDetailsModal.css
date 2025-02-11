@@ -146,7 +146,7 @@
 
 .ability-row {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(15, 1fr);
   gap: 4px;
   margin-bottom: 4px;
 }
@@ -159,6 +159,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
 .ability-slot img {
@@ -172,40 +173,91 @@
   height: 100%;
   background-color: #1a1a1a;
   border: 1px solid #333;
+  position: relative;
 }
 
-.ability-upgrades-section {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #282c34;
+.empty-ability-slot::after {
+  content: attr(title);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.match-stats-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.match-stat-card {
+  background-color: #1e2128;
   border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
 }
 
-.ability-upgrades-section h3 {
-  margin-top: 0;
+.match-stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.stat-header h3 {
+  margin: 0;
   color: #4caf50;
   font-family: 'Reaver', serif;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
 }
 
-.ability-upgrades-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-  gap: 4px;
+.stat-icon {
+  font-size: 1.5rem;
+  opacity: 0.8;
 }
 
-.ability-upgrade-slot {
-  aspect-ratio: 1;
-  background-color: #1a1a1a;
-  border-radius: 4px;
+.stat-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.ability-upgrade-slot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+.stat-label {
+  color: #8b8b8b;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Color variations for different stat cards */
+.performance .stat-header h3 { color: #2196f3; }
+.economy .stat-header h3 { color: #ffd700; }
+.impact .stat-header h3 { color: #f44336; }
+.farming .stat-header h3 { color: #4caf50; }
+
+@media (max-width: 768px) {
+  .match-stats-container {
+    grid-template-columns: 1fr;
+  }
 }
