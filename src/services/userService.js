@@ -36,5 +36,10 @@ export const userService = {
   async getItemDetails(itemId) {
     const response = await fetch(`${BASE_URL}/game/item/${itemId}`);
     return response.json();
+  },
+
+  async getAbilityDetails(abilityId) {
+    const response = await fetch(`${BASE_URL}/game/ability/${abilityId}`);
+    return response.json();
   }
 }; 

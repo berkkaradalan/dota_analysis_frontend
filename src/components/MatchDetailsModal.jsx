@@ -4,6 +4,7 @@ import '../styles/MatchDetailsModal.css';
 
 function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
   const [itemDetails, setItemDetails] = useState({});
+  const [abilityDetails, setAbilityDetails] = useState({});
 
   useEffect(() => {
     const fetchItemDetails = async () => {
@@ -37,7 +38,33 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
       setItemDetails(itemMap);
     };
 
+    const fetchAbilityDetails = async () => {
+      if (!matchDetails) return;
+      
+      // Assuming abilities are stored as Ability0 through Ability29 in matchDetails
+      const abilityPromises = Array.from({ length: 30 }, async (_, index) => {
+        const abilityId = matchDetails[`Ability${index}`];
+        if (!abilityId || abilityId === 0) return null;
+        
+        try {
+          const data = await userService.getAbilityDetails(abilityId);
+          return { id: abilityId, ...data };
+        } catch (error) {
+          console.error(`Error fetching ability ${abilityId}:`, error);
+          return null;
+        }
+      });
+
+      const abilities = await Promise.all(abilityPromises);
+      const abilityMap = {};
+      abilities.forEach((ability, index) => {
+        abilityMap[`Ability${index}`] = ability;
+      });
+      setAbilityDetails(abilityMap);
+    };
+
     fetchItemDetails();
+    fetchAbilityDetails();
   }, [matchDetails]);
 
   const formatTime = (timestamp) => {
@@ -120,6 +147,31 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="abilities-section">
+              <h3>Abilities</h3>
+              {[0, 1, 2].map(row => (
+                <div key={row} className="ability-row">
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const index = row * 10 + i;
+                    const ability = abilityDetails[`Ability${index}`];
+                    return (
+                      <div key={index} className="ability-slot">
+                        {ability ? (
+                          <img 
+                            src={ability.AbilityImage}
+                            alt={ability.AbilityName}
+                            title={ability.AbilityName}
+                          />
+                        ) : (
+                          <div className="empty-ability-slot" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
             <div className="match-info">
