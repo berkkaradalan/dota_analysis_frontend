@@ -11,7 +11,6 @@ function MatchList({ matches, steamId }) {
   return (
     <div className="match-list">
       {matches.map((match, index) => {
-        // Debug log for each match
         console.log(`Processing match ${index}:`, match);
         return (
           <MatchCard 

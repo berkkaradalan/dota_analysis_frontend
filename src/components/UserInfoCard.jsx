@@ -6,7 +6,6 @@ const UserInfoCard = ({ userInfo }) => {
 
   if (!userInfo) return null;
 
-  // No need to check for message property anymore since we handle it in App.jsx
   const { AccountID, PersonaName, SteamAvatar, LastLogin } = userInfo;
 
   if (!AccountID || !PersonaName || !SteamAvatar) {

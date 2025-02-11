@@ -39,28 +39,49 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
     };
 
     const fetchAbilityDetails = async () => {
-      if (!matchDetails) return;
+      console.log('Raw matchDetails:', matchDetails);
       
-      // Assuming abilities are stored as Ability0 through Ability29 in matchDetails
-      const abilityPromises = Array.from({ length: 30 }, async (_, index) => {
-        const abilityId = matchDetails[`Ability${index}`];
-        if (!abilityId || abilityId === 0) return null;
-        
-        try {
-          const data = await userService.getAbilityDetails(abilityId);
-          return { id: abilityId, ...data };
-        } catch (error) {
-          console.error(`Error fetching ability ${abilityId}:`, error);
-          return null;
-        }
-      });
+      if (!matchDetails?.AbilityUpgrades) {
+        console.log('No ability upgrades found in:', matchDetails);
+        return;
+      }
 
-      const abilities = await Promise.all(abilityPromises);
-      const abilityMap = {};
-      abilities.forEach((ability, index) => {
-        abilityMap[`Ability${index}`] = ability;
-      });
-      setAbilityDetails(abilityMap);
+      const abilityUpgrades = matchDetails.AbilityUpgrades;
+      console.log('Found ability upgrades:', abilityUpgrades);
+
+      try {
+        const abilityPromises = abilityUpgrades.map(async (abilityId, index) => {
+          console.log(`Attempting to fetch ability ${abilityId}`);
+          try {
+            const data = await userService.getAbilityDetails(abilityId);
+            console.log(`Got ability data for ${abilityId}:`, data);
+            
+            return {
+              [`Ability${index}`]: {
+                AbilityID: abilityId,
+                AbilityName: data.AbilityName,
+                AbilityImage: data.AbilityImage
+              }
+            };
+          } catch (error) {
+            console.error(`Error fetching ability ${abilityId}:`, error);
+            return null;
+          }
+        });
+
+        const abilities = await Promise.all(abilityPromises);
+        const abilityMap = abilities.reduce((acc, curr) => {
+          if (curr) {
+            return { ...acc, ...curr };
+          }
+          return acc;
+        }, {});
+
+        console.log('Final ability map:', abilityMap);
+        setAbilityDetails(abilityMap);
+      } catch (error) {
+        console.error('Error in fetchAbilityDetails:', error);
+      }
     };
 
     fetchItemDetails();

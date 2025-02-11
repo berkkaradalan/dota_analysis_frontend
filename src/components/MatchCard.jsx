@@ -10,7 +10,6 @@ function MatchCard({ match, steamId }) {
   const [error, setError] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   
-  // Debug log the incoming match data
   console.log('Match data in MatchCard:', match);
 
   useEffect(() => {
@@ -50,12 +49,10 @@ function MatchCard({ match, steamId }) {
 
   const handleShowDetails = async () => {
     try {
-      // Önce modal'ı göster
       setShowDetails(true);
       setIsLoadingDetails(true);
       setError(null);
 
-      // matchId'yi match objesinden al
       const matchId = match.MatchID || match.match_id;
       
       console.log('Sending request with:', { matchId, steamId, match });
