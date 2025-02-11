@@ -1,7 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { userService } from '../services/userService';
 import '../styles/MatchDetailsModal.css';
 
 function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
+  const [itemDetails, setItemDetails] = useState({});
+
+  useEffect(() => {
+    const fetchItemDetails = async () => {
+      if (!matchDetails) return;
+      
+      const itemIds = [
+        matchDetails.Item0,
+        matchDetails.Item1,
+        matchDetails.Item2,
+        matchDetails.Item3,
+        matchDetails.Item4,
+        matchDetails.Item5
+      ];
+
+      const itemPromises = itemIds.map(async (itemId) => {
+        if (itemId === 0) return null;
+        try {
+          const data = await userService.getItemDetails(itemId);
+          return { id: itemId, ...data };
+        } catch (error) {
+          console.error(`Error fetching item ${itemId}:`, error);
+          return null;
+        }
+      });
+
+      const items = await Promise.all(itemPromises);
+      const itemMap = {};
+      items.forEach((item, index) => {
+        itemMap[`Item${index}`] = item;
+      });
+      setItemDetails(itemMap);
+    };
+
+    fetchItemDetails();
+  }, [matchDetails]);
+
   const formatTime = (timestamp) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleString();
@@ -64,6 +102,25 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
             <p>Gold Spent: {matchDetails.GoldSpent}</p>
           </div>
         </div>
+
+            <div className="items-section">
+              <h3>Items</h3>
+              <div className="item-slots">
+                {[0, 1, 2, 3, 4, 5].map((slot) => (
+                  <div key={slot} className="item-slot">
+                    {itemDetails[`Item${slot}`] ? (
+                      <img 
+                        src={itemDetails[`Item${slot}`].ItemImage}
+                        alt={itemDetails[`Item${slot}`].ItemName}
+                        title={itemDetails[`Item${slot}`].ItemName}
+                      />
+                    ) : (
+                      <div className="empty-slot" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="match-info">
               <p>Start Time: {formatTime(matchDetails.MatchStartTime)}</p>

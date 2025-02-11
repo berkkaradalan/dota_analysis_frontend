@@ -84,4 +84,48 @@
 
 .modal-error p {
   color: #ff4444;
-} 
+}
+
+.items-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #282c34;
+  border-radius: 8px;
+}
+
+.items-section h3 {
+  margin-top: 0;
+  color: #4caf50;
+  font-family: 'Reaver', serif;
+  margin-bottom: 0.5rem;
+}
+
+.item-slots {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.item-slot {
+  aspect-ratio: 1;
+  background-color: #1a1a1a;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.item-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empty-slot {
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+}

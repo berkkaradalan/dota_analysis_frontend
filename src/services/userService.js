@@ -31,5 +31,10 @@ export const userService = {
     const data = await response.json();
     console.log('Match details response:', data); // Debug log
     return data;
+  },
+
+  async getItemDetails(itemId) {
+    const response = await fetch(`${BASE_URL}/game/item/${itemId}`);
+    return response.json();
   }
 }; 
