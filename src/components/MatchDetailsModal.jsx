@@ -39,28 +39,29 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
     };
 
     const fetchAbilityDetails = async () => {
-      if (!matchDetails) return;
+      if (!matchDetails?.AbilityUpgrades) return;
       
-      // Assuming abilities are stored as Ability0 through Ability29 in matchDetails
-      const abilityPromises = Array.from({ length: 30 }, async (_, index) => {
-        const abilityId = matchDetails[`Ability${index}`];
-        if (!abilityId || abilityId === 0) return null;
-        
+      // Create an array of 30 slots initialized to null
+      const abilityMap = Array(30).fill(null);
+      
+      // Map each ability upgrade to its corresponding slot
+      for (let i = 0; i < matchDetails.AbilityUpgrades.length; i++) {
+        const abilityId = matchDetails.AbilityUpgrades[i];
         try {
           const data = await userService.getAbilityDetails(abilityId);
-          return { id: abilityId, ...data };
+          abilityMap[i] = { id: abilityId, ...data };
         } catch (error) {
           console.error(`Error fetching ability ${abilityId}:`, error);
-          return null;
         }
-      });
+      }
 
-      const abilities = await Promise.all(abilityPromises);
-      const abilityMap = {};
-      abilities.forEach((ability, index) => {
-        abilityMap[`Ability${index}`] = ability;
+      // Convert array to object with Ability0, Ability1, etc. keys
+      const abilityDetails = {};
+      abilityMap.forEach((ability, index) => {
+        abilityDetails[`Ability${index}`] = ability;
       });
-      setAbilityDetails(abilityMap);
+      
+      setAbilityDetails(abilityDetails);
     };
 
     fetchItemDetails();
