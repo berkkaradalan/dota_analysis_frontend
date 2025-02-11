@@ -1,7 +1,7 @@
 import React from 'react';
 import MatchCard from './MatchCard';
 
-function MatchList({ matches }) {
+function MatchList({ matches, steamId }) {
   console.log('Matches in MatchList:', matches);
   
   if (!matches || matches.length === 0) {
@@ -16,7 +16,8 @@ function MatchList({ matches }) {
         return (
           <MatchCard 
             key={match.MatchID || match.match_id || index} 
-            match={match} 
+            match={match}
+            steamId={steamId}
           />
         );
       })}

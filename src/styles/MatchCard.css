@@ -47,4 +47,22 @@
 .match-card-details strong {
   color: white;
 }
+
+.details-button {
+  grid-column: 1 / -1;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'Reaver', serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.details-button:hover {
+  background-color: #45a049;
+}
   

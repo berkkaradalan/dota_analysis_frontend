@@ -142,7 +142,7 @@ function App() {
           {matches && matches.length > 0 && (
             <div>
               <h2>Match History</h2>
-              <MatchList matches={matches} />
+              <MatchList matches={matches} steamId={steamId} />
               
               <div className="pagination">
                 {hasMore && (

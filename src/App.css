@@ -3,6 +3,9 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
 .logo {
@@ -46,6 +49,8 @@
   margin: 0 auto;
   padding: 2rem;
   width: 60vw;
+  position: relative;
+  z-index: 1;
 }
 
 form {

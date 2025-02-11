@@ -24,5 +24,12 @@ export const userService = {
   async getFavoriteHeroes(steamId) {
     const response = await fetch(`${BASE_URL}/hero/favorites/${steamId}`);
     return response.json();
+  },
+
+  async getMatchDetails(matchId, steamId) {
+    const response = await fetch(`${BASE_URL}/match/detailed/${matchId}?steam_id=${steamId}`);
+    const data = await response.json();
+    console.log('Match details response:', data); // Debug log
+    return data;
   }
 }; 
