@@ -11,4 +11,7 @@ export default defineConfig({
   define: {
     'process.env': process.env,
   },
+  preview: {
+    allowedHosts: ['dotaanalysisfrontend-production.up.railway.app']
+  }
 });
