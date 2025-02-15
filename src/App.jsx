@@ -108,8 +108,7 @@ function App() {
           type="text"
           value={steamId}
           onChange={(e) => setSteamId(e.target.value)}
-          placeholder={import.meta.env.VITE_API_BASE_URL}
-          // placeholder="Enter Steam ID"
+          placeholder="Enter Steam ID"
           required
         />
         <button type="submit" disabled={loading}>
