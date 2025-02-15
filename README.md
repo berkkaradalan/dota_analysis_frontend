@@ -1,8 +1,37 @@
-# React + Vite
+# Dota Analysis Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dota Analysis Frontend is the frontend of **Dota Analysis Backend**. It allows users to view their profile information, most played heroes, and match history.
 
-Currently, two official plugins are available:
+## Features
+- **User Card:** Displays user ID, last login, and username.
+- **Most Played Heroes:** Lists the top 3 most played heroes by the user.
+- **Match History:** Shows the user's recent matches.
+- **Match Details:** 
+  - **Performance:** KDA, level, net worth, GPM, XPM
+  - **Impact:** Hero and tower damage, healing
+  - **Farming:** Last hits, denies, gold spent
+  - **Items & Abilities:** Items acquired and ability upgrades
+  - **General Info:** Match duration, game mode, result
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation & Running
+
+To start the project:
+
+```bash
+npm install
+npm start
+```
+
+## Using Docker
+### Example Build:
+```bash
+docker build -t data_analysis_frontend .
+```
+### Example Run:
+```bash
+docker run -d -p 4173:4173 -e VITE_API_BASE_URL="dota_analysis_backend:8000" --name dota_analysis_frontend --network dota_network data_analysis_frontend
+```
+
+## Images
+![alt text](/images/frontend1.png)
+![alt text](/images/frontend2.png)
