@@ -2,7 +2,6 @@ import React from 'react';
 import '../styles/UserInfoCard.css';
 
 const UserInfoCard = ({ userInfo }) => {
-  console.log('UserInfo received:', userInfo); // Debug log
 
   if (!userInfo) return null;
 

@@ -1,4 +1,7 @@
-const BASE_URL = 'http://localhost:8000'; // adjust this to your FastAPI server URL
+// const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const BASE_URL = process.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL;
+console.log(BASE_URL)
 
 export const userService = {
   async getUserInfo(steamId) {

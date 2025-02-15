@@ -39,22 +39,17 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
     };
 
     const fetchAbilityDetails = async () => {
-      console.log('Raw matchDetails:', matchDetails);
       
       if (!matchDetails?.AbilityUpgrades) {
-        console.log('No ability upgrades found in:', matchDetails);
         return;
       }
 
       const abilityUpgrades = matchDetails.AbilityUpgrades;
-      console.log('Found ability upgrades:', abilityUpgrades);
 
       try {
         const abilityPromises = abilityUpgrades.map(async (abilityId, index) => {
-          console.log(`Attempting to fetch ability ${abilityId}`);
           try {
             const data = await userService.getAbilityDetails(abilityId);
-            console.log(`Got ability data for ${abilityId}:`, data);
             
             return {
               [`Ability${index}`]: {
@@ -64,7 +59,6 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
               }
             };
           } catch (error) {
-            console.error(`Error fetching ability ${abilityId}:`, error);
             return null;
           }
         });
@@ -77,10 +71,8 @@ function MatchDetailsModal({ matchDetails, isLoading, error, onClose }) {
           return acc;
         }, {});
 
-        console.log('Final ability map:', abilityMap);
         setAbilityDetails(abilityMap);
       } catch (error) {
-        console.error('Error in fetchAbilityDetails:', error);
       }
     };
 

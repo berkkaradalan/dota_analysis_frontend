@@ -10,29 +10,23 @@ function MatchCard({ match, steamId }) {
   const [error, setError] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   
-  console.log('Match data in MatchCard:', match);
 
   useEffect(() => {
     const fetchHeroDetails = async () => {
       try {
         const heroId = match.HeroID || match.hero_id;
-        console.log('Attempting to fetch hero details with ID:', heroId);
         
         if (!heroId) {
-          console.error('No hero ID found in match data:', match);
           return;
         }
         
         const data = await userService.getHeroDetails(heroId);
-        console.log('Hero details response:', data);
         
         if (data && data.message) {
           setHeroDetails(data.message);
         } else {
-          console.error('Invalid hero details response:', data);
         }
       } catch (error) {
-        console.error('Error fetching hero details:', error);
       }
     };
 
@@ -55,14 +49,12 @@ function MatchCard({ match, steamId }) {
 
       const matchId = match.MatchID || match.match_id;
       
-      console.log('Sending request with:', { matchId, steamId, match });
       
       if (!matchId || !steamId) {
         throw new Error('Match ID or Steam ID is missing');
       }
 
       const data = await userService.getMatchDetails(matchId, steamId);
-      console.log('Match details response:', data);
 
       if (data.error) {
         throw new Error(data.error);
@@ -71,7 +63,6 @@ function MatchCard({ match, steamId }) {
       setMatchDetails(data.message || data);
 
     } catch (error) {
-      console.error('Error fetching match details:', error);
       setError(error.message);
     } finally {
       setIsLoadingDetails(false);

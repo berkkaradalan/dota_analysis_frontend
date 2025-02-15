@@ -30,7 +30,6 @@ function App() {
     try {
       // Fetch user info
       const userResponse = await userService.getUserInfo(steamId);
-      console.log('User Response:', userResponse);
       if (userResponse.error) {
         throw new Error(userResponse.error);
       }
@@ -38,7 +37,6 @@ function App() {
 
       // Fetch win/lose data
       const winLoseResponse = await userService.getWinLose(steamId);
-      console.log('Win/Lose Response:', winLoseResponse);
       if (winLoseResponse.error) {
         throw new Error(winLoseResponse.error);
       }
@@ -46,8 +44,6 @@ function App() {
 
       // Fetch first page of matches
       const matchesResponse = await userService.getMatches(steamId, matchesPerPage, 1);
-      console.log('Raw matches data:', matchesResponse);
-      console.log('Matches Response:', matchesResponse);
       if (matchesResponse.error) {
         throw new Error(matchesResponse.error);
       }
@@ -112,7 +108,8 @@ function App() {
           type="text"
           value={steamId}
           onChange={(e) => setSteamId(e.target.value)}
-          placeholder="Enter Steam ID"
+          placeholder={import.meta.env.VITE_API_BASE_URL}
+          // placeholder="Enter Steam ID"
           required
         />
         <button type="submit" disabled={loading}>
