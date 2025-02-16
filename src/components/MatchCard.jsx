@@ -9,6 +9,7 @@ function MatchCard({ match, steamId }) {
   const [matchDetails, setMatchDetails] = useState(null);
   const [error, setError] = useState(null);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [notification, setNotification] = useState(null);
   
 
   useEffect(() => {
@@ -43,12 +44,10 @@ function MatchCard({ match, steamId }) {
 
   const handleShowDetails = async () => {
     try {
-      setShowDetails(true);
       setIsLoadingDetails(true);
       setError(null);
 
       const matchId = match.MatchID || match.match_id;
-      
       
       if (!matchId || !steamId) {
         throw new Error('Match ID or Steam ID is missing');
@@ -56,21 +55,41 @@ function MatchCard({ match, steamId }) {
 
       const data = await userService.getMatchDetails(matchId, steamId);
 
+      if (data.message === "Match or User not found") {
+        setNotification("Match or User not found");
+        return;
+      }
+
       if (data.error) {
         throw new Error(data.error);
       }
 
+      setShowDetails(true);
       setMatchDetails(data.message || data);
 
     } catch (error) {
-      setError(error.message);
+      setNotification(error.message);
     } finally {
       setIsLoadingDetails(false);
     }
   };
 
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
   return (
     <div className="match-card">
+      {notification && (
+        <div className="notification">
+          {notification}
+        </div>
+      )}
       <div className="match-card-header">
         {heroDetails && (
           <>
